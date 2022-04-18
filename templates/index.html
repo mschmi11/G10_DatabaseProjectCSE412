@@ -1,10 +1,10 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <h1>How many aircraft are in the table?</h1>
+    <p>How many aircraft are in the table?</p>
     {%for count in result %}
         <div class='nation'>
-		<h3>#{{ count }}</h3>
+		<p>#{{ count }}</p>
         </div>
     {% endfor %}
 {% endblock %}

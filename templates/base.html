@@ -2,36 +2,37 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>{% block title %} {% endblock %}- FlaskApp</title>
-    <style>
-        nav a {
-            color: #d64161;
-            font-size: 3em;
-            margin-left: 50px;
-            text-decoration: none;
-        }
-
-        .result {
-            padding: 20px;
-            margin: 10px;
-            background-color: #f7f4f4;
-        }
-
-        .review {
-                margin-left: 50px;
-                font-size: 20px;
-        }
-
-    </style>
+    <title>{% block title %} {% endblock %}- Aircraft Crashes Database</title>
+    <script src="https://d3js.org/d3.v5.min.js"></script>
+    <script type="text/javascript" src="{{url_for('static', filename='mapd3.js')}}"></script>
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
+    <link rel='stylesheet' href="{{url_for('static', filename='style.css')}}">
 </head>
 <body>
     <nav>
-        <a href="{{ url_for('index') }}">FlaskApp</a>
-        <a href="#">About</a>
+        <a href="{{ url_for('index') }}">Aircraft Crashes Database</a>
     </nav>
     <hr>
+    <p>Sample Query:</p>
     <div class="content">
         {% block content %} {% endblock %}
     </div>
+    
+    <p>User query: (only gui implemented right now)</p>
+    <div class="query1">
+    	<label for="date">Query: Select aircraft on given date</label>
+    	<input type="textarea" value="2/1/2003"></input>
+    	<input type="button" value="Query" name="buttonDate" id="buttonDate"></input>
+    	<label>Result</label>
+    </div>
+    
+    <p>USA Map using d3.js:</p>
+    <div class='row'>
+    	<div id= "svgHolder" class='col-12'>
+            <svg id='mapSvg'></svg>
+    	</div>
+    </div>
+    
+    
 </body>
 </html>
