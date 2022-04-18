@@ -6,8 +6,9 @@ app = Flask(__name__)
 
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
-                            database='mibv',
-                            user='mibv')
+                            database='aircraft_db',
+                            user='admin',
+                            password='admin')
     return conn
 
 
@@ -15,7 +16,7 @@ def get_db_connection():
 def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT COUNT(*) FROM nation;')
+    cur.execute('SELECT COUNT(*) FROM Aircraft;')
     result = cur.fetchall()
     cur.close()
     conn.close()
