@@ -34,11 +34,17 @@ access the webpage at 127.0.0.1:5000
 File Descriptions:
 
 init_db: start up tables and fill entries (right now has only one aircraft)
+
 app.py: flask app for creating a server with the postgres table
+
 templates: folder with html files
+
 base.html: base html file
+
 index.html: shows result of query
+
 mapd3.js: use d3 to draw map
+
 style.css: stylesheet for html
 
 
