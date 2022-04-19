@@ -20,3 +20,16 @@ def index():
     cur.close()
     conn.close()
     return render_template('index.html', result=result)
+
+"""
+Example of pulling data from html page
+@app.route("/personadd", methods=['POST'])
+def personadd():
+    pname = request.form["pname"]
+    color = request.form["color"]
+    entry = People(pname, color)
+    db.session.add(entry)
+    db.session.commit()
+
+    return render_template("index.html")
+"""
