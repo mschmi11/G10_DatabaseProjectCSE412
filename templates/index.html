@@ -1,6 +1,16 @@
 {% extends 'base.html' %}
 
 {% block content %}
+    
+    <form action="{{ url_for('countaircraft')}}" method="post">
+          <h5>Enter the aircraft model ("A234")</h5>
+          <div>
+              <input type="text" name="aircraft_model" placeholder="aircraft_model">
+          </div>
+          <div>
+              <button >Submit</button>
+          </div>
+      </form>
     <p>How many aircraft are in the table?</p>
     {%for count in result %}
         <div class='nation'>

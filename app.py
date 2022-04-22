@@ -2,7 +2,8 @@ import os
 import string
 
 import psycopg2
-from flask import Flask, render_template
+from flask import Flask, render_template, request, flash
+from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
@@ -94,25 +95,23 @@ def user_entry_to_sql(input_type: string, user_input: string):
 
 
 @app.route('/')
-def index(query: string):
+def index():
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute(query)
+    cur.execute('SELECT COUNT(*) FROM Aircraft;')
     result = cur.fetchall()
     cur.close()
     conn.close()
     return render_template('index.html', result=result)
 
+@app.route("/countaircraft", methods=['POST'])
+def countaircraft():
+    aircraft_model = request.form["aircraft_model"]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT COUNT(*) FROM Aircraft WHERE Aircraft.aircraft_model=\'' + aircraft_model + '\';')
+    result = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template("index.html", result=result)
 
-"""
-Example of pulling data from html page
-@app.route("/personadd", methods=['POST'])
-def personadd():
-    pname = request.form["pname"]
-    color = request.form["color"]
-    entry = People(pname, color)
-    db.session.add(entry)
-    db.session.commit()
-
-    return render_template("index.html")
-"""

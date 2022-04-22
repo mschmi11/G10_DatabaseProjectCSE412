@@ -18,23 +18,6 @@
         {% block content %} {% endblock %}
     </div>
     
-    <!--
-    Example of defining user input for db queries:
-    
-    <form action="{{ url_for('personadd')}}" method="post">
-          <h5>Enter the user Details</h5>
-          <div>
-              <input type="text" name="pname" placeholder="pname">
-          </div>
-          <div>
-              <input type="text" name="color" placeholder="color">
-          </div>
-          <div>
-              <button >Submit</button>
-          </div>
-      </form>
-    -->
-    
     <p>User query: (only gui implemented right now)</p>
     <div class="query1">
     	<label for="date">Query: Select aircraft on given date</label>
@@ -42,6 +25,9 @@
     	<input type="button" value="Query" name="buttonDate" id="buttonDate"></input>
     	<label>Result</label>
     </div>
+    
+    
+    
     
     <p>USA Map using d3.js:</p>
     <div class='row'>
