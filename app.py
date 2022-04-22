@@ -93,7 +93,7 @@ def user_entry_to_sql(input_type: string, user_input: string):
 
     index(sql_query)
 
-
+#this runs at the start of the program
 @app.route('/')
 def index():
     conn = get_db_connection()
@@ -104,6 +104,7 @@ def index():
     conn.close()
     return render_template('index.html', result=result)
 
+# template for requesting user entered info and returning query result
 @app.route("/countaircraft", methods=['POST'])
 def countaircraft():
     aircraft_model = request.form["aircraft_model"]
@@ -114,4 +115,44 @@ def countaircraft():
     cur.close()
     conn.close()
     return render_template("index.html", result=result)
+    
+# queries 
+# Select aircraft with an incident on user date
+@app.route("/aircraftIncidentOnDate", methods=['POST'])
+def aircraftIncidentOnDate():
+    incident_date = request.form["incident_date"]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT DISTINCT Aircraft.aircraft_reg_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Incidents.event_date=\'' + incident_date + '\';')
+    resultQuery1 = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template("index.html", resultQuery1=resultQuery1)
+    
+# Select all incidents by aircraft model
+@app.route("/incidentsByModel", methods=['POST'])
+def incidentsByModel():
+    aircraft_model2 = request.form["aircraft_model2"]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('SELECT DISTINCT Incidents.event_ntsb_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Aircraft.aircraft_model=\'' + aircraft_model2 + '\';')
+    resultQuery2 = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template("index.html", resultQuery2=resultQuery2)
+
+# Insert an aircraft
+@app.route("/insertAircraft", methods=['POST'])
+def insertAircraft():
+    aircraft_model_insert = request.form["aircraft_model_insert"]
+    aircraft_make_insert = request.form["aircraft_make_insert"]
+    aircraft_reg_num_insert = request.form["aircraft_reg_num_insert"]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute('INSERT INTO Aircraft VALUES (' + aircraft_reg_num_insert + ', NULL, \'' + aircraft_make_insert + '\', \'' + aircraft_model_insert + '\'); SELECT * FROM Aircraft WHERE aircraft_reg_number=\'' + aircraft_reg_num_insert + '\';')
+    result_insert = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template("index.html", result_insert=result_insert)
+
 
