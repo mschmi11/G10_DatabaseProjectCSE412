@@ -3,8 +3,34 @@ import string
 
 import psycopg2
 from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
+
 
 app = Flask(__name__)
+
+
+# app.config["Our Database"] = where to get database
+db = SQLAlchemy(app)
+
+db.Model.metadata.reflect(db.engine)  # learns database tables, columns, types, etc
+
+
+class Incidents(db.Model):  # creates class based on the Incidents' table of our DB
+    table_name = 'Incidents'
+    table_args = {'extend_existing', }
+    event_ntsb_number = db.Column(db.Text, primary_key=True)  # sets primary key of Incidents' table
+
+
+class Aircraft(db.Model):  # creates class based on the Aircraft table of our DB
+    table_name = 'Aircraft'
+    table_args = {'extend_existing': True}
+    aircraft_reg_number = db.Column(db.Text, primary_key=True)  # sets primary key of Aircraft table
+
+
+class Casualties(db.Model):  # creates class based on the Casualties' table of our DB
+    table_name = 'Casualties'
+    table_args = {'extend_existing': True}
+    casualty_id = db.Column(db.Text, primary_key=True)  # sets primary key of Casualties' table
 
 
 # establishes connection to DB
@@ -22,25 +48,23 @@ def get_user_entry():
 
 
 # takes in input_type: the data type of field entered (EX: Aircraft Registration Number) user input
-# creates SQL query to send to index() which will query database
+# creates SQL query through SQLAlchemy
 def user_entry_to_sql(input_type: string, user_input: string):
     sql_query: string  # string that will hold the SQL query
     if input_type == "Aircraft Registration":  # Input is entered into Aircraft Registration text field
-        sql_query = "SELECT * FROM Incidents WHERE aircraft_reg_number=" + user_input
+        sql_query = Incidents.query.filter_by(aircraft_reg_number=user_input).all()
     elif input_type == "Event Date":  # Input is entered into Event Date text field
-        sql_query = "SELECT * FROM Incidents WHERE event_date=" + user_input
+        sql_query = Incidents.query.filter_by(event_date=user_input).all()
     elif input_type == "NTSB Number":  # Input is entered into NTSB Number text field
-        sql_query = "SELECT * FROM Incidents WHERE event_ntsb_number=" + user_input
+        sql_query = Incidents.query.filter_by(event_ntsb_number=user_input).first()
     elif input_type == "Aircraft Make":  # Input is entered into Aircraft Make text field
-        sql_query = "SELECT * FROM Incidents WHERE Incidents.aircraft_reg_number = " \
-                    "Aircraft.aircraft_reg_number AND Aircraft.aircraft_make=" + user_input
+            #  need to figure out join
     elif input_type == "Aircraft Model":  # Input is entered into Aircraft Model text field
-        sql_query = "SELECT * FROM Incidents WHERE Incidents.aircraft_reg_number = " \
-                    "Aircraft.aircraft_reg_number AND Aircraft.aircraft_model=" + user_input
+            # need to figure out join
     elif input_type == "Event Location":  # Input is entered into Event Location text field
-        sql_query = "SELECT * FROM Incidents WHERE event_date=" + user_input
+        sql_query = Incidents.query.filter_by(event_location=user_input).all()
     elif input_type == "Event Severity":  # Input is entered into Event Severity text field
-        sql_query = "SELECT * FROM Incidents WHERE event_severity=" + user_input
+        sql_query = Incidents.query.filter_by(event_severity=user_input).all()
     elif input_type == "Aircraft Make & Aircraft Model":  # Input is entered as combo; aircraft make & model text fields
         user_input_split = user_input.split(" ")
         sql_query = "SELECT * FROM Incidents WHERE Incidents.aircraft_reg_number = " \
