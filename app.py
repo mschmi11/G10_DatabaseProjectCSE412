@@ -115,6 +115,31 @@ def user_entry_to_sql(input_type: string, user_input: string):
         sql_query = session.query(Incidents).filter(Incidents.aircraft_reg_number == user_input_split[0] and
                                                     Incidents.event_severity == user_input_split[1])
 
+    elif input_type == "Event Location & Aircraft Model":
+        # Input is entered as combo; event location & aircraft model fields
+        user_input_split = user_input.split(" ")
+        sql_query = sql_query = session.query(Incidents).join(Aircraft). \
+            filter(Incidents.event_location == user_input_split[0] and
+                   Aircraft.aircraft_model == user_input_split[1]).all()
+    elif input_type == "Event Location & Aircraft Make":
+        # Input is entered as combo; event location & aircraft model fields
+        user_input_split = user_input.split(" ")
+        sql_query = sql_query = session.query(Incidents).join(Aircraft). \
+            filter(Incidents.event_location == user_input_split[0] and
+                   Aircraft.aircraft_make == user_input_split[1]).all()
+    elif input_type == "Event Location & NTSB Number":
+        user_input_split = user_input.split(" ")
+        sql_query = session.query(Incidents).filter(Incidents.event_location == user_input_split[0] and
+                                                    Incidents.event_ntsb_number == user_input_split[1]).all()
+    elif input_type == "Event Location & Event Severities":
+        # Input is entered as combo; event date & casualties fields !!! NEED TO FIX THIS ONE !!!
+        user_input_split = user_input.split(" ")
+        sql_query = session.query(Incidents).filter(Incidents.event_location == user_input_split[0] and
+                                                    Incidents.event_severity == user_input_split[1])
+
+
+
+
     index(sql_query)
 
 
