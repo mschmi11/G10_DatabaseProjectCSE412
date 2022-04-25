@@ -2,158 +2,176 @@
 
 {% block content %}
     
-    <!-- Test operation (count aircraft) -->
-    <form action="{{ url_for('countaircraft')}}" method="post">
-          <h5>Sample Query 1</h5>
-          <h5>Enter the aircraft model that you would like to count("A234")</h5>
-          <div>
-              <input type="text" name="aircraft_model" placeholder="aircraft_model">
-          </div>
-          <div>
-              <button >Submit</button>
-          </div>
-      </form>
-      
-    <p>How many aircraft are in the table?</p>
-    {%for var in result %}
-        <div>
-		<p>{{ var }}</p>
-        </div>
-    {% endfor %}
+    <div class="container-fluid">
+    	<div class="row justify-content-center">
+    		<div class="col-10">
+    		
+		    <!-- Test operation (count aircraft) -->
+		    <form action="{{ url_for('countaircraft')}}" method="post">
+			  <h5>Sample Query 1<br>Enter the aircraft model that you would like to count("A234")</h5>
+			  <div>
+			      <input type="text" name="aircraft_model" placeholder="aircraft_model">
+			  </div>
+			  <div>
+			      <button >Submit</button>
+			  </div>
+		      </form>
+		      
+		    <p>How many aircraft are in the table?</p>
+		    {%for var in result %}
+			<div class="res">
+				<p>{{ var }}</p>
+			</div>
+		    {% endfor %}
+		    
+    		</div>
+    		<div class="col-10">
+    		
+		    <!-- Select aircraft with an incident on user date -->
+		    <form action="{{ url_for('aircraftIncidentOnDate')}}" method="post">
+			  <h5>Sample Query 2<br>Enter the date which you would like to view aircraft accidents ("1 February 2003")</h5>
+			  <div>
+			      <input type="text" name="incident_date" placeholder="incident_date">
+			  </div>
+			  <div>
+			      <button >Submit</button>
+			  </div>
+		      </form>
+		    <p>Query result:</p>
+		    {%for var in resultQuery1 %}
+			<div class="res">
+				<p>{{ var }}</p>
+			</div>
+		    {% endfor %}
+    		
+    		</div>
+    		<div class="col-10">
+    		<!-- Select all incidents by aircraft model -->
+		    <form action="{{ url_for('incidentsByModel')}}" method="post">
+			  <h5>Sample Query 3<br>Enter the model whose incidents you would like to view ("A234")</h5>
+			  <div>
+			      <input type="text" name="aircraft_model2" placeholder="aircraft_model2">
+			  </div>
+			  <div>
+			      <button >Submit</button>
+			  </div>
+		      </form>
+		    <p>Query result:</p>
+		    {%for var in resultQuery2 %}
+			<div class="res">
+				<p>{{ var }}</p>
+			</div>
+		    {% endfor %}
+    		</div>
+    		<div class="col-10">
+    		
+		    <!-- Insert an aircraft -->
+		    <form action="{{ url_for('insertAircraft')}}" method="post">
+			  <h5>Sample Query 4<br>Enter the info for the aircraft you would like to insert ("registration number 142, model B52, and Make Honeywell")</h5>
+			  <div>
+			      <input type="text" name="aircraft_model_insert" placeholder="aircraft_model_insert">
+			  </div>
+			  <div>
+			      <input type="text" name="aircraft_make_insert" placeholder="aircraft_make_insert">
+			  </div>
+			  <div>
+			      <input type="text" name="aircraft_reg_num_insert" placeholder="aircraft_reg_num_insert">
+			  </div>
+			  <div>
+			      <button >Submit</button>
+			  </div>
+		      </form>
+		    <p>Query result:</p>
+		    {%for var in result_insert %}
+			<div class="res">
+				<p>{{ var  }}</p>
+			</div>
+		    {% endfor %}
+		    
+    		</div>
+    		<div class="col-10">
+    		
+		    <br><form action="{{ url_for('user_entry_to_sql')}}" method="post">
+		    <h5>SQL Alchemy Querying<br>Enter Aircraft Informaion</h5>
+			  <div>
+			      <input type="text" name="aircraft_reg_num" placeholder="aircraft_reg_num">
+			  </div>
+			  <div>
+			      <input type="text" name="aircraft_model" placeholder="aircraft_model">
+			  </div>
+			  <div>
+			      <input type="text" name="aircraft_make" placeholder="aircraft_make">
+			  </div>
+			  <p>Which Incident is this aircraft associated with?</p>
+			  <div>
+			      <input type="text" name="aircraft_event_ntsb_num" placeholder="aircraft_event_ntsb_num">
+			  </div>
+		   <h5>Enter Casualties Informaion</h5>
+			  <div>
+			      <input type="text" name="casualties_id" placeholder="casualties_id">
+			  </div>
+			  <div>
+			      <input type="text" name="casualties_first_name" placeholder="casualties_first_name">
+			  </div>
+			  <div>
+			      <input type="text" name="casualties_last_name" placeholder="casualties_last_name">
+			  </div>
+			  <div>
+			      <input type="text" name="casualties_dob" placeholder="casualties_dob">
+			  </div>
+			  <div>
+			      <input type="text" name="casualties_age" placeholder="casualties_age">
+			  </div>
+			  <div>
+			      <select id="casualties_sex" name="casualties_sex" placeholder="casualties_sex">
+			      	<option value="F">F</option>
+			      	<option value="M">M</option>
+			      </select>
+			  </div>
+			  <p>Which Incident is this casualty associated with?</p>
+			  <div>
+			      <input type="text" name="casualties_event_ntsb_num" placeholder="casualties_event_ntsb_num">
+			  </div>
+		    <h5>Enter Incidents Informaion</h5>
+			  <div>
+			      <input type="text" name="incident_event_ntsb" placeholder="incident_event_ntsb">
+			  </div>
+			  <div>
+			      <select id="incident_event_severity" name="incident_event_severity" placeholder="incident_event_severity">
+			      	<option value="Minor">Minor</option>
+			      	<option value="Mild">Mild</option>
+			      	<option value="Damaging">Damaging</option>
+			      	<option value="Severe">Severe</option>
+			      	<option value="Catastrophic">Catastrophic</option>
+			      </select>
+			  </div>
+			  <div>
+			      <input type="text" name="incident_event_date" placeholder="incident_event_date">
+			  </div>
+			  <div>
+			      <input type="text" name="incident_event_location" placeholder="incident_event_location">
+			  </div>
+			  <p>Which aicraft is this incident associated with?</p>
+			  <div>
+			      <input type="text" name="incident_aircraft_reg_num" placeholder="incident_aircraft_reg_num">
+			  </div>
+			  <div>
+			      <button >Submit</button>
+			  </div>
+		    </form>
+		    
+		    <p>Search result</p>
+			<div class="res">
+				<p>{{ resultSearch }}</p>
+			</div>
+    		</div>
+    	</div>
+    </div>
     
-    <!-- Select aircraft with an incident on user date -->
-    <form action="{{ url_for('aircraftIncidentOnDate')}}" method="post">
-          <h5>Sample Query 2</h5>
-          <h5>Enter the date which you would like to view aircraft accidents ("1 February 2003")</h5>
-          <div>
-              <input type="text" name="incident_date" placeholder="incident_date">
-          </div>
-          <div>
-              <button >Submit</button>
-          </div>
-      </form>
-    <p>Query result:</p>
-    {%for var in resultQuery1 %}
-        <div>
-		<p>{{ var }}</p>
-        </div>
-    {% endfor %}
     
-    <!-- Select all incidents by aircraft model -->
-    <form action="{{ url_for('incidentsByModel')}}" method="post">
-          <h5>Sample Query 3</h5>
-          <h5>Enter the model whose incidents you would like to view ("A234")</h5>
-          <div>
-              <input type="text" name="aircraft_model2" placeholder="aircraft_model2">
-          </div>
-          <div>
-              <button >Submit</button>
-          </div>
-      </form>
-    <p>Query result:</p>
-    {%for var in resultQuery2 %}
-        <div>
-		<p>{{ var }}</p>
-        </div>
-    {% endfor %}
     
-    <!-- Insert an aircraft -->
-    <form action="{{ url_for('insertAircraft')}}" method="post">
-          <h5>Sample Query 4</h5>
-          <h5>Enter the info for the aircraft you would like to insert ("registration number 142, model B52, and Make Honeywell")</h5>
-          <div>
-              <input type="text" name="aircraft_model_insert" placeholder="aircraft_model_insert">
-          </div>
-          <div>
-              <input type="text" name="aircraft_make_insert" placeholder="aircraft_make_insert">
-          </div>
-          <div>
-              <input type="text" name="aircraft_reg_num_insert" placeholder="aircraft_reg_num_insert">
-          </div>
-          <div>
-              <button >Submit</button>
-          </div>
-      </form>
-    <p>Query result:</p>
-    {%for var in result_insert %}
-        <div>
-		<p>{{ var  }}</p>
-        </div>
-    {% endfor %}
     
-    <br><form action="{{ url_for('user_entry_to_sql')}}" method="post">
-    <h5>SQL Alchemy Querying</h5>
-    <h5>Enter Aircraft Informaion</h5>
-          <div>
-              <input type="text" name="aircraft_reg_num" placeholder="aircraft_reg_num">
-          </div>
-          <div>
-              <input type="text" name="aircraft_model" placeholder="aircraft_model">
-          </div>
-          <div>
-              <input type="text" name="aircraft_make" placeholder="aircraft_make">
-          </div>
-          <p>Which Incident is this aircraft associated with?</p>
-          <div>
-              <input type="text" name="aircraft_event_ntsb_num" placeholder="aircraft_event_ntsb_num">
-          </div>
-   <h5>Enter Casualties Informaion</h5>
-          <div>
-              <input type="text" name="casualties_id" placeholder="casualties_id">
-          </div>
-          <div>
-              <input type="text" name="casualties_first_name" placeholder="casualties_first_name">
-          </div>
-          <div>
-              <input type="text" name="casualties_last_name" placeholder="casualties_last_name">
-          </div>
-          <div>
-              <input type="text" name="casualties_dob" placeholder="casualties_dob">
-          </div>
-          <div>
-              <input type="text" name="casualties_age" placeholder="casualties_age">
-          </div>
-          <div>
-              <select id="casualties_sex" name="casualties_sex" placeholder="casualties_sex">
-              	<option value="F">F</option>
-              	<option value="M">M</option>
-              </select>
-          </div>
-          <p>Which Incident is this casualty associated with?</p>
-          <div>
-              <input type="text" name="casualties_event_ntsb_num" placeholder="casualties_event_ntsb_num">
-          </div>
-    <h5>Enter Incidents Informaion</h5>
-          <div>
-              <input type="text" name="incident_event_ntsb" placeholder="incident_event_ntsb">
-          </div>
-          <div>
-              <select id="incident_event_severity" name="incident_event_severity" placeholder="incident_event_severity">
-              	<option value="Minor">Minor</option>
-              	<option value="Mild">Mild</option>
-              	<option value="Damaging">Damaging</option>
-              	<option value="Severe">Severe</option>
-              	<option value="Catastrophic">Catastrophic</option>
-              </select>
-          </div>
-          <div>
-              <input type="text" name="incident_event_date" placeholder="incident_event_date">
-          </div>
-          <div>
-              <input type="text" name="incident_event_location" placeholder="incident_event_location">
-          </div>
-          <p>Which aicraft is this incident associated with?</p>
-          <div>
-              <input type="text" name="incident_aircraft_reg_num" placeholder="incident_aircraft_reg_num">
-          </div>
-          <div>
-              <button >Submit</button>
-          </div>
-    </form>
     
-    <p>Search result</p>
-        <div>
-		<p>{{ resultSearch }}</p>
-        </div>
+    
       
 {% endblock %}

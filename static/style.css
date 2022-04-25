@@ -1,8 +1,7 @@
 nav a {
-	color: #d64060;
+	color: black;
 	font-size: 2em;
 	margin-left: 25px;
-	text-decoration: none;
 }
 .result {
 	padding: 20px;
@@ -18,18 +17,61 @@ nav a {
 	//text-align: center;
 }
 
+body{
+	background-color: #8495A6;
+}
+
+button {
+	background-color: #F6CA78;
+	border: solid;
+	border-color: black;
+	border-radius: 5px;
+	padding: 5px;
+	margin: 5px;
+}
+
+select {
+	background-color: #F6CA78;
+	border: solid;
+	border-color: gray;
+	border-radius: 5px;
+}
+
+input {
+	border: solid;
+	border-color: gray;
+	margin: 5px;
+
+}
+
+.col-10 {
+	border: solid;
+	border-color: black;
+	border-radius: 5px;
+	padding: 10px;
+	background-color: white;
+}
+
+.res {
+	color: green;
+}
+
+h5 {
+	//background-color: #4f1e2f;
+	//color: white;
+	//border: solid;
+	//border-color: black;
+	margin: 5px;
+}
 
 select{
 	color: black;
 	background-color: white;
+	margin: 5px;
 }
 
 p{
-	margin-left: 5px;
-}
-
-form{
-	margin-left: 10px;
+	margin: 5px;
 }
 
 svg {

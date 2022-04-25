@@ -7,14 +7,22 @@
     <script type="text/javascript" src="{{url_for('static', filename='mapd3.js')}}"></script>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css" />
     <link rel='stylesheet' href="{{url_for('static', filename='style.css')}}">
+    
+    
+  <script>
+    /*to prevent Firefox FOUC, this must be here*/
+    let FF_FOUC_FIX;
+  </script>
+    
 </head>
+
 <body>
     <nav>
         <a href="{{ url_for('index') }}">Aircraft Crashes Database</a>
     </nav>
     <hr>
     
-    <p>Sample Query:</p>
+    <p>Database Application for viewing aircraft crash incidents and casualties data</p>
     <div class="content">
         {% block content %} {% endblock %}
     </div>
