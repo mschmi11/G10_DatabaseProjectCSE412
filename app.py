@@ -1,19 +1,16 @@
 import os
 import string
-from flask import Flask, request, render_template
+import psycopg2
+from flask import Flask, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.automap import automap_base
-import psycopg2
 from sqlalchemy import create_engine
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker
-from flask import Flask, render_template, request, flash
-from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
 
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
-
 app.config['SQLALCHEMY_DATABASE_URI'] = "postgresql://admin:admin@localhost/aircraft_db"
 
 db = SQLAlchemy(app)
@@ -23,7 +20,6 @@ Base.prepare(db.engine, reflect=True)
 Incidents = Base.classes.incidents
 Aircraft = Base.classes.aircraft
 Casualties = Base.classes.casualties
-
 
 # establishes connection to DB
 def get_db_connection():
@@ -35,8 +31,6 @@ def get_db_connection():
 
 # takes in input_type: the data type of field entered (EX: Aircraft Registration Number) user input
 # creates SQL query through SQLAlchemy
-
-
 @app.route("/user_entry_to_sql", methods=['POST'])
 def user_entry_to_sql():
     aircraft_reg_num = request.form["aircraft_reg_num"]
@@ -55,8 +49,7 @@ def user_entry_to_sql():
     incident_event_date = request.form["incident_event_date"]
     incident_event_location = request.form["incident_event_location"]
     incident_aircraft_reg_num = request.form["incident_aircraft_reg_num"]
-    return aircraft_reg_num
-"""  
+
     user_input: string
     a_list1: list
     a_list2: list
@@ -66,8 +59,13 @@ def user_entry_to_sql():
     i_list4: list
     incidents_ntsb_num_list: list
     result_set: set
-
-    if aircraft_model is None or aircraft_make is None
+    
+    example = db.session.query(Aircraft).filter(Aircraft.aircraft_model == aircraft_model).first()
+    resultSearch = example.aircraft_model
+    print(resultSearch)
+    return render_template("index.html", resultSearch=resultSearch)
+"""
+    if aircraft_model or aircraft_make:
         if aircraft_model:
             a_list1 = db.select([Aircraft.columns.event_ntsb_num]).where(Aircraft.columns.aircraft_reg_number == aircraft_reg_num)
             s1 = set(a_list1)
@@ -87,10 +85,11 @@ def user_entry_to_sql():
 
         incidents_ntsb_num_list = db.select([Incidents.event_ntsb_number])
         result_set = result_set.intersection(incidents_ntsb_num_list)
-
-    elif incident_event_ntsb or incident_event_severity or incident_event_date or incident_event_location
+        
+    
+    elif incident_event_ntsb or incident_event_severity or incident_event_date or incident_event_location:
         if incident_event_ntsb:
-            i_list1 = db.select([Incidents.columns.])
+            i_list1 = db.select([Incidents.columns])
         if incident_event_severity:
         if incident_event_date:
         if incident_event_location:
@@ -98,9 +97,8 @@ def user_entry_to_sql():
     list_incidents
     list_casualties
     result_test = db.session.query(Aircraft).filter_by(aircraft_model='A234')
-   
-    return render_template("index.html", result_test=result_test)
 
+    return render_template("index.html", result_test=result_test)
 
     if input_type == "Aircraft Registration":  # Input is entered into Aircraft Registration text field
         sql_query = session.query(Incidents).filter(Incidents.aircraft_reg_number == user_input).all()
@@ -213,7 +211,6 @@ def countaircraft():
     return render_template("index.html", result=result)
 
 
-# queries
 # Select aircraft with an incident on user date
 @app.route("/aircraftIncidentOnDate", methods=['POST'])
 def aircraftIncidentOnDate():
