@@ -67,6 +67,12 @@ def user_entry_to_sql():
     i_list2 = list()
     i_list3 = list()
     i_list4 = list()
+    c_list1 = list()
+    c_list2 = list()
+    c_list3 = list()
+    c_list4 = list()
+    c_list5 = list()
+    c_list6 = list()
     incident_queried = False
     aircraft_queried = False
     casualties_queried = False
@@ -78,6 +84,12 @@ def user_entry_to_sql():
     is2 = set()
     is3 = set()
     is4 = set()
+    cs1 = set()
+    cs2 = set()
+    cs3 = set()
+    cs4 = set()
+    cs5 = set()
+    cs6 = set()
     aircraft_result_set = set()
     incident_result_set = set()
     casualty_result_set = set()
@@ -134,6 +146,9 @@ def user_entry_to_sql():
                         incident_result_set = is1.intersection(is2)
                         incident_result_set = incident_result_set.intersection(is3)
                         incident_result_set = incident_result_set.intersection(is4)
+                    else:
+                        incident_result_set = is1.intersection(is2)
+                        incident_result_set = incident_result_set.intersection(is3)
                 elif i_list4:
                     incident_result_set = is1.intersection(is2)
                     incident_result_set = incident_result_set.intersection(is4)
@@ -167,6 +182,223 @@ def user_entry_to_sql():
                 incident_result_set = is3
         elif i_list4:
             incident_result_set = is4
+    if casualties_id or casualties_age or casualties_sex or casualties_dob or casualties_first_name or casualties_last_name:
+        casualties_queried = True
+        if casualties_id:
+            c_list1 = session.query(Casualties.event_ntsb_number).filter(Casualties.casualty_id == casualties_id).all()
+            cs1 = set(c_list1)
+        if casualties_age:
+            c_list2 = session.query(Casualties.event_ntsb_number).filter(Casualties.age == casualties_age).all()
+            cs2 = set(c_list2)
+        if casualties_sex:
+            c_list3 = session.query(Casualties.event_ntsb_number).filter(Casualties.sex == casualties_sex).all()
+            cs3 = set(c_list3)
+        if casualties_dob:
+            c_list4 = session.query(Casualties.event_ntsb_number).filter(Casualties.dob == casualties_dob).all()
+            cs4 = set(c_list4)
+        if casualties_first_name:
+            c_list5 = session.query(Casualties.event_ntsb_number).filter(Casualties.first_name == casualties_first_name).all()
+            cs5 = set(c_list5)
+        if casualties_last_name:
+            c_list6 = session.query(Casualties.event_ntsb_number).filter(Casualties.last_name == casualties_last_name).all()
+            cs6 = set(c_list6)
+
+        if c_list1:
+            if c_list2:
+                if c_list3:
+                    if c_list4:
+                        if c_list5:
+                            if c_list6:
+                                casualty_result_set = cs1.intersection(cs2)
+                                casualty_result_set = casualty_result_set.intersection(cs3)
+                                casualty_result_set = casualty_result_set.intersection(cs4)
+                                casualty_result_set = casualty_result_set.intersection(cs5)
+                                casualty_result_set = casualty_result_set.intersection(cs6)
+                            else:
+                                casualty_result_set = cs1.intersection(cs2)
+                                casualty_result_set = casualty_result_set.intersection(cs3)
+                                casualty_result_set = casualty_result_set.intersection(cs4)
+                                casualty_result_set = casualty_result_set.intersection(cs5)
+                        elif c_list6:
+                            casualty_result_set = cs1.intersection(cs2)
+                            casualty_result_set = casualty_result_set.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs4)
+                            casualty_result_set = casualty_result_set.intersection(cs6)
+                        else:
+                            casualty_result_set = cs1.intersection(cs2)
+                            casualty_result_set = casualty_result_set.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs4)
+                    elif c_list5:
+                        if c_list6:
+                            casualty_result_set = cs1.intersection(cs2)
+                            casualty_result_set = casualty_result_set.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                            casualty_result_set = casualty_result_set.intersection(cs6)
+                        else:
+                            casualty_result_set = cs1.intersection(cs2)
+                            casualty_result_set = casualty_result_set.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                    elif c_list6:
+                        casualty_result_set = cs1.intersection(cs2)
+                        casualty_result_set = casualty_result_set.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs1.intersection(cs2)
+                        casualty_result_set = casualty_result_set.intersection(cs3)
+            elif c_list3:
+                if c_list4:
+                    if c_list5:
+                        if c_list6:
+                            casualty_result_set = cs1.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs4)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                            casualty_result_set = casualty_result_set.intersection(cs6)
+                        else:
+                            casualty_result_set = cs1.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs4)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                    elif c_list6:
+                        casualty_result_set = cs1.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs1.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs4)
+                elif c_list5:
+                    if c_list6:
+                        casualty_result_set = cs1.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs1.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                elif c_list6:
+                    casualty_result_set = cs1.intersection(cs3)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs1.intersection(cs3)
+            elif c_list4:
+                if c_list5:
+                    if c_list6:
+                        casualty_result_set = cs1.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs1.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                elif c_list6:
+                    casualty_result_set = cs1.intersection(cs4)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs1.intersection(cs4)
+            elif c_list5:
+                if c_list6:
+                    casualty_result_set = cs1.intersection(cs5)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs1.intersection(cs5)
+            else:
+                casualty_result_set = cs1
+        elif c_list2:
+            if c_list3:
+                if c_list4:
+                    if c_list5:
+                        if c_list6:
+                            casualty_result_set = cs2.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs4)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                            casualty_result_set = casualty_result_set.intersection(cs6)
+                        else:
+                            casualty_result_set = cs2.intersection(cs3)
+                            casualty_result_set = casualty_result_set.intersection(cs4)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                    elif c_list6:
+                        casualty_result_set = cs2.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs2.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs4)
+                elif c_list5:
+                    if c_list6:
+                        casualty_result_set = cs2.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs2.intersection(cs3)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                elif c_list6:
+                    casualty_result_set = cs2.intersection(cs3)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs2.intersection(cs3)
+            elif c_list4:
+                    if c_list5:
+                        if c_list6:
+                            casualty_result_set = cs2.intersection(cs4)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                            casualty_result_set = casualty_result_set.intersection(cs6)
+                        else:
+                            casualty_result_set = cs2.intersection(cs4)
+                            casualty_result_set = casualty_result_set.intersection(cs5)
+                    elif c_list6:
+                        casualty_result_set = cs2.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs2.intersection(cs4)
+            elif c_list5:
+                if c_list6:
+                    casualty_result_set = cs2.intersection(cs5)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs2.intersection(cs5)
+            else:
+                casualty_result_set = cs2
+        elif c_list3:
+            if c_list4:
+                if c_list5:
+                    if c_list6:
+                        casualty_result_set = cs3.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                        casualty_result_set = casualty_result_set.intersection(cs6)
+                    else:
+                        casualty_result_set = cs3.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                elif c_list6:
+                    casualty_result_set = cs3.intersection(cs4)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs3.intersection(cs4)
+            elif c_list5:
+                if c_list6:
+                    casualty_result_set = cs3.intersection(cs5)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs3.intersection(cs5)
+            elif c_list6:
+                casualty_result_set = cs3.intersection(cs6)
+            else:
+                casualty_result_set = cs3
+        elif c_list4:
+            if c_list5:
+                if c_list6:
+                    casualty_result_set = cs4.intersection(cs5)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs4.intersection(cs5)
+            elif c_list6:
+                casualty_result_set = cs4.intersection(cs6)
+            else:
+                casualty_result_set = cs4
+        elif c_list5:
+            if c_list6:
+                casualty_result_set = cs5.intersection(cs6)
+            else:
+                casualty_result_set = cs5
+        elif c_list6:
+            casualty_result_set = cs6
+        else:
+            casualty_result_set = cs1
 
     if aircraft_queried:
         if incident_queried:
@@ -188,111 +420,6 @@ def user_entry_to_sql():
         result_set = casualty_result_set
 
     return render_template("index.html", resultSearch=result_set)
-'''
-    incidents_ntsb_num_list = db.select([Incidents.event_ntsb_number])
-    incidents_set = set(incidents_ntsb_num_list)
-    result_set = result_set.intersection(incidents_set)
-    '''
-
-
-'''
-    elif incident_event_ntsb or incident_event_severity or incident_event_date or incident_event_location
-        if incident_event_ntsb:
-            i_list1 = db.select([Incidents.columns.])
-        if incident_event_severity:
-        if incident_event_date:
-        if incident_event_location:
-        
-    list_incidents
-    list_casualties
-    result_test = db.session.query(Aircraft).filter_by(aircraft_model='A234')
-   
-
-
-    if input_type == "Aircraft Registration":  # Input is entered into Aircraft Registration text field
-        sql_query = session.query(Incidents).filter(Incidents.aircraft_reg_number == user_input).all()
-    elif input_type == "Event Date":  # Input is entered into Event Date text field
-        sql_query = session.query(Incidents).filter(Incidents.event_date == user_input).all()
-    elif input_type == "NTSB Number":  # Input is entered into NTSB Number text field
-        sql_query = session.query(Incidents).filter(Incidents.event_ntsb_number == user_input)
-    elif input_type == "Aircraft Make":  # Input is entered into Aircraft Make text field
-        sql_query = session.query(Incidents).join(Aircraft).filter(Aircraft.aircraft_make == user_input).all()
-    elif input_type == "Aircraft Model":  # Input is entered into Aircraft Model text field
-        sql_query = session.query(Incidents).join(Aircraft).filter(Aircraft.aircraft_model == user_input).all()
-    elif input_type == "Event Location":  # Input is entered into Event Location text field
-        sql_query = Incidents.query.filter(Incidents.event_location == user_input).all()
-    elif input_type == "Event Severity":  # Input is entered into Event Severity text field
-        sql_query = Incidents.query.filter(Incidents.event_severity == user_input).all()
-    elif input_type == "Aircraft Make & Aircraft Model":  # Input is entered as combo; aircraft make & model text fields
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).join(Aircraft).filter(Aircraft.aircraft_make == user_input_split[0] and
-                                                                   Aircraft.aircraft_model == user_input_split[1]).all()
-    elif input_type == "Event Date & Event Location":  # Input is entered as combo; event date & location text fields
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.event_date == user_input_split[0] and
-                                                    Incidents.event_location == user_input_split[1]).all()
-    elif input_type == "Event Date & Aircraft Registration":
-        # Input is entered as combo; event date & aircraft reg num text fields
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.event_date == user_input_split[0] and
-                                                    Incidents.aircraft_reg_number == user_input_split[1]).all()
-    elif input_type == "Event Date & NTSB Number":  # Input is entered as combo; event date & NTSB number text fields
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.event_date == user_input_split[0] and
-                                                    Incidents.event_ntsb_number == user_input_split[1]).all()
-    elif input_type == "Event Date & Aircraft Make":
-        # Input is entered as combo; event date & aircraft make text fields
-        user_input_split = user_input.split(" ")
-        sql_query = sql_query = session.query(Incidents).join(Aircraft).\
-            filter(Incidents.event_date == user_input_split[0] and Aircraft.aircraft_make == user_input_split[1]).all()
-    elif input_type == "Event Date & Aircraft Model":
-        # Input is entered as combo; event date & aircraft model fields
-        user_input_split = user_input.split(" ")
-        sql_query = sql_query = session.query(Incidents).join(Aircraft). \
-            filter(Incidents.event_date == user_input_split[0] and Aircraft.aircraft_model == user_input_split[1]).all()
-    elif input_type == "Event Date & Event Severities":
-        # Input is entered as combo; event date & casualties fields !!! NEED TO FIX THIS ONE !!!
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.event_date == user_input_split[0] and
-                                                    Incidents.event_ntsb_number == user_input_split[1])
-    elif input_type == "Aircraft Registration & NTSB Number":
-        # Input is entered as combo; aircraft reg num & NTSB num fields
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.aircraft_reg_number == user_input_split[0] and
-                                                    Incidents.event_ntsb_number == user_input_split[1])
-    elif input_type == "Aircraft Registration & Event Location":
-        # Input is entered as combo; aircraft reg num & event location fields
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.aircraft_reg_number == user_input_split[0] and
-                                                    Incidents.event_location == user_input_split[1])
-    elif input_type == "Aircraft Registration & Event Severity":
-        # Input is entered as combo; event date & casualties fields !!! NEED TO FIX THIS ONE !!!
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.aircraft_reg_number == user_input_split[0] and
-                                                    Incidents.event_severity == user_input_split[1])
-    elif input_type == "Event Location & Aircraft Model":
-        # Input is entered as combo; event location & aircraft model fields
-        user_input_split = user_input.split(" ")
-        sql_query = sql_query = session.query(Incidents).join(Aircraft). \
-            filter(Incidents.event_location == user_input_split[0] and
-                   Aircraft.aircraft_model == user_input_split[1]).all()
-    elif input_type == "Event Location & Aircraft Make":
-        # Input is entered as combo; event location & aircraft model fields
-        user_input_split = user_input.split(" ")
-        sql_query = sql_query = session.query(Incidents).join(Aircraft). \
-            filter(Incidents.event_location == user_input_split[0] and
-                   Aircraft.aircraft_make == user_input_split[1]).all()
-    elif input_type == "Event Location & NTSB Number":
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.event_location == user_input_split[0] and
-                                                    Incidents.event_ntsb_number == user_input_split[1]).all()
-    elif input_type == "Event Location & Event Severities":
-        # Input is entered as combo; event date & casualties fields !!! NEED TO FIX THIS ONE !!!
-        user_input_split = user_input.split(" ")
-        sql_query = session.query(Incidents).filter(Incidents.event_location == user_input_split[0] and
-                                                    Incidents.event_severity == user_input_split[1])
-    index(sql_query)
-'''
 
 
 # this runs at the start of the program
