@@ -60,26 +60,134 @@ def user_entry_to_sql():
     incident_event_location = request.form["incident_event_location"]
     incident_aircraft_reg_num = request.form["incident_aircraft_reg_num"]
     user_input: string
-    #a_list1 = list()
+    a_list1 = list()
     a_list2 = list()
+    a_list3 = list()
     i_list1 = list()
     i_list2 = list()
     i_list3 = list()
     i_list4 = list()
-    incidents_ntsb_num_list: list
+    incident_queried = False
+    aircraft_queried = False
+    casualties_queried = False
     result_set = set()
+    as1 = set()
+    as2 = set()
+    as3 = set()
+    is1 = set()
+    is2 = set()
+    is3 = set()
+    is4 = set()
+    aircraft_result_set = set()
+    incident_result_set = set()
+    casualty_result_set = set()
 
-    if aircraft_model or aircraft_make:
+    if aircraft_model or aircraft_make or aircraft_reg_num:
+        aircraft_queried = True
         if aircraft_model:
-            a_list1 = session.query(Aircraft).filter_by(aircraft_model='A234').first()
-            # s1 = set(a_list1)
+            a_list1 = session.query(Aircraft.event_ntsb_number).filter(Aircraft.aircraft_model == aircraft_model).all()
+            as1 = set(a_list1)
         if aircraft_make:
-            a_list2 = db.select([Base.classes.aircraft.columns.event_ntsb_num]).where(
-                Aircraft.columns.aircraft_reg_number ==
-                aircraft_make)
-            s2 = set(a_list2)
+            a_list2 = session.query(Aircraft.event_ntsb_number).filter(Aircraft.aircraft_make == aircraft_make).all()
+            as2 = set(a_list2)
+        if aircraft_reg_num:
+            a_list3 = session.query(Aircraft.event_ntsb_number).filter(Aircraft.aircraft_reg_number ==
+                                                                       aircraft_reg_num).all()
+            as3 = set(a_list3)
 
-    return render_template("index.html", resultSearch=a_list1)
+        if a_list1:
+            if a_list2:
+                if a_list3:
+                    aircraft_result_set = as1.intersection(as2)
+                    aircraft_result_set = aircraft_result_set.intersection(as3)
+                else:
+                    aircraft_result_set = as1.intersection(as2)
+            elif a_list3:
+                aircraft_result_set = as1.intersection(as3)
+            else:
+                aircraft_result_set = as1
+        elif a_list2:
+            if a_list3:
+                aircraft_result_set = as2.intersection(as3)
+            else:
+                aircraft_result_set = as2
+        elif a_list3:
+            aircraft_result_set = as3
+    if incident_event_ntsb or incident_event_date or incident_event_location or incident_event_severity:
+        incident_queried = True
+        if incident_event_ntsb:
+            i_list1 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_ntsb_number == incident_event_ntsb).all()
+            is1 = set(i_list1)
+        if incident_event_date:
+            i_list2 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_date == incident_event_date).all()
+            is2 = set(i_list2)
+        if incident_event_location:
+            i_list3 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_location == incident_event_location).all()
+            is3 = set(i_list3)
+        if incident_event_severity:
+            i_list4 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_severity == incident_event_severity).all()
+            is4 = set(i_list4)
+        if i_list1:
+            if i_list2:
+                if i_list3:
+                    if i_list4:
+                        incident_result_set = is1.intersection(is2)
+                        incident_result_set = incident_result_set.intersection(is3)
+                        incident_result_set = incident_result_set.intersection(is4)
+                elif i_list4:
+                    incident_result_set = is1.intersection(is2)
+                    incident_result_set = incident_result_set.intersection(is4)
+                else:
+                    incident_result_set = is1.intersection(is2)
+            elif i_list3:
+                if i_list4:
+                    incident_result_set = is1.intersection(is3)
+                    incident_result_set = incident_result_set.intersection(is4)
+                else:
+                    incident_result_set = is1.intersection(is3)
+            elif i_list4:
+                incident_result_set = is1.intersection(is4)
+            else:
+                incident_result_set = is1
+        elif i_list2:
+            if i_list3:
+                if i_list4:
+                    incident_result_set = is2.intersection(is3)
+                    incident_result_set = incident_result_set.intersection(is4)
+                else:
+                    incident_result_set = is2.intersection(is3)
+            elif i_list4:
+                incident_result_set = is2.intersection(is4)
+            else:
+                incident_result_set = is2
+        elif i_list3:
+            if i_list4:
+                incident_result_set = is3.intersection(is4)
+            else:
+                incident_result_set = is3
+        elif i_list4:
+            incident_result_set = is4
+
+    if aircraft_queried:
+        if incident_queried:
+            if casualties_queried:
+                result_set = aircraft_result_set.intersection(incident_result_set)
+                result_set = result_set.intersection(casualty_result_set)
+            else:
+                result_set = aircraft_result_set.intersection(incident_result_set)
+        elif casualties_queried:
+            result_set = aircraft_result_set.intersection(casualty_result_set)
+        else:
+            result_set = aircraft_result_set
+    elif incident_queried:
+        if casualties_queried:
+            result_set = incident_result_set.intersection(casualty_result_set)
+        else:
+            result_set = incident_result_set
+    else:
+        result_set = casualty_result_set
+
+    return render_template("index.html", resultSearch=result_set)
 '''
     incidents_ntsb_num_list = db.select([Incidents.event_ntsb_number])
     incidents_set = set(incidents_ntsb_num_list)
