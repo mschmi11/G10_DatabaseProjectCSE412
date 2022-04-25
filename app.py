@@ -1,15 +1,12 @@
 import os
 import string
-from flask import Flask, request, render_template
-from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy.ext.automap import automap_base
 import psycopg2
-from sqlalchemy import create_engine
-from sqlalchemy.ext.automap import automap_base
-from sqlalchemy.orm import sessionmaker, Session
+import json
 from flask import Flask, render_template, request, flash
 from flask_sqlalchemy import SQLAlchemy
-from sqlalchemy import and_, select
+from sqlalchemy import create_engine, and_, select
+from sqlalchemy.ext.automap import automap_base
+from sqlalchemy.orm import sessionmaker, Session
 
 app = Flask(__name__)
 
@@ -27,7 +24,6 @@ Casualties = Base.classes.casualties
 
 session = Session(db.engine)
 
-
 # establishes connection to DB
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
@@ -39,8 +35,6 @@ def get_db_connection():
 
 # takes in input_type: the data type of field entered (EX: Aircraft Registration Number) user input
 # creates SQL query through SQLAlchemy
-
-
 @app.route("/user_entry_to_sql", methods=['POST'])
 def user_entry_to_sql():
     aircraft_reg_num = request.form["aircraft_reg_num"]
@@ -419,7 +413,7 @@ def user_entry_to_sql():
     else:
         result_set = casualty_result_set
 
-    return render_template("index.html", resultSearch=result_set)
+    return render_template("index.html", result_user_entry_to_sql=result_set)
 
 
 # this runs at the start of the program
@@ -441,10 +435,10 @@ def countaircraft():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute('SELECT COUNT(*) FROM Aircraft WHERE Aircraft.aircraft_model=\'' + aircraft_model + '\';')
-    result = cur.fetchall()
+    result_countaircraft = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("index.html", result=result)
+    return render_template("index.html", result_countaircraft=result_countaircraft)
 
 
 # queries
@@ -455,11 +449,11 @@ def aircraftIncidentOnDate():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        'SELECT DISTINCT Aircraft.aircraft_reg_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Incidents.event_date=\'' + incident_date + '\';')
-    resultQuery1 = cur.fetchall()
+        'SELECT * FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Incidents.event_date=\'' + incident_date + '\';')
+    result_aircraftIncidentOnDate = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("index.html", resultQuery1=resultQuery1)
+    return render_template("index.html", result_aircraftIncidentOnDate=result_aircraftIncidentOnDate)
 
 
 # Select all incidents by aircraft model
@@ -469,11 +463,11 @@ def incidentsByModel():
     conn = get_db_connection()
     cur = conn.cursor()
     cur.execute(
-        'SELECT DISTINCT Incidents.event_ntsb_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Aircraft.aircraft_model=\'' + aircraft_model2 + '\';')
-    resultQuery2 = cur.fetchall()
+        'SELECT * FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Aircraft.aircraft_model=\'' + aircraft_model2 + '\';')
+    result_incidentsByModel = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("index.html", resultQuery2=resultQuery2)
+    return render_template("index.html", result_incidentsByModel=result_incidentsByModel)
 
 
 # Insert an aircraft
@@ -486,7 +480,69 @@ def insertAircraft():
     cur = conn.cursor()
     cur.execute(
         'INSERT INTO Aircraft VALUES (' + aircraft_reg_num_insert + ', NULL, \'' + aircraft_make_insert + '\', \'' + aircraft_model_insert + '\'); SELECT * FROM Aircraft WHERE aircraft_reg_number=\'' + aircraft_reg_num_insert + '\';')
-    result_insert = cur.fetchall()
+    result_insertAircraft = cur.fetchall()
     cur.close()
     conn.close()
-    return render_template("index.html", result_insert=result_insert)
+    return render_template("index.html", result_insertAircraft=result_insertAircraft)
+    
+
+# Update an aircraft
+@app.route("/updateAircraft", methods=['POST'])
+def updateAircraft():
+    aircraft_model_update = request.form["aircraft_model_update"]
+    aircraft_reg_num_update = request.form["aircraft_reg_num_update"]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        'UPDATE AIRCRAFT SET aircraft_model=\'' + aircraft_model_update + '\' WHERE aircraft_reg_number=\'' + aircraft_reg_num_update + '\';SELECT * FROM Aircraft WHERE aircraft_reg_number=\'' + aircraft_reg_num_update + '\';')
+    result_updateAircraft = cur.fetchall()
+    cur.close()
+    conn.close()
+    return render_template("index.html", result_updateAircraft=result_updateAircraft)
+     
+
+# Update an aircraft
+@app.route("/deleteCasualty", methods=['POST'])
+def deleteCasualty():
+    casualty_id_delete = request.form["casualty_id_delete"]
+    conn = get_db_connection()
+    cur = conn.cursor()
+    cur.execute(
+        'DELETE FROM Casualties WHERE casualty_id=\'' + casualty_id_delete + '\';')
+    #result_updateAircraft = cur.fetchall()
+    result_updateAircraft = casualty_id_delete + "deleted."
+    cur.close()
+    conn.close()
+    return render_template("index.html", result_deleteCasualty=casualty_id_delete+" deleted.")
+    
+
+# Get data for map Function
+@app.route("/map_function", methods=['POST'])
+def map_function():
+    conn = get_db_connection()
+    cur = conn.cursor()
+    
+    states = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut",  "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
+    
+    result_map_function = []
+    for i in (states):
+    	cur.execute('SELECT * FROM Incidents WHERE event_state=\'' + i + '\';')
+    	state = cur.fetchall()
+    	print(state)
+    	if not (state is None):
+    		result_map_function.append(state)
+    
+    print(result_map_function)
+    cur.close()
+    conn.close()
+    return json.dumps(result_map_function)
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
