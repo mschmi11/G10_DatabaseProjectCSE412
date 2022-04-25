@@ -10,7 +10,13 @@
 		    <form action="{{ url_for('countaircraft')}}" method="post">
 			  <h5>Sample Query 1<br>Enter the aircraft model that you would like to count("A234")</h5>
 			  <div>
-			      <input type="text" name="aircraft_model" placeholder="aircraft_model">
+			      <select id="aircraft_model" name="aircraft_model" placeholder="aircraft_model">
+			      	<option value="A234">A234</option>
+			      	<option value="B52">B52</option>
+			      	<option value="D019">D019</option>
+			      	<option value="D339">D339</option>
+			      	<option value="ID232">ID232</option>
+			      </select>
 			  </div>
 			  <div>
 			      <button >Submit</button>
@@ -50,7 +56,13 @@
 		    <form action="{{ url_for('incidentsByModel')}}" method="post">
 			  <h5>Sample Query 3<br>Enter the model whose incidents you would like to view ("A234")</h5>
 			  <div>
-			      <input type="text" name="aircraft_model2" placeholder="aircraft_model2">
+			      <select id="aircraft_model2" name="aircraft_model2" placeholder="aircraft_model2">
+			      	<option value="A234">A234</option>
+			      	<option value="B52">B52</option>
+			      	<option value="D019">D019</option>
+			      	<option value="D339">D339</option>
+			      	<option value="ID232">ID232</option>
+			      </select>
 			  </div>
 			  <div>
 			      <button >Submit</button>
@@ -69,10 +81,23 @@
 		    <form action="{{ url_for('insertAircraft')}}" method="post">
 			  <h5>Sample Query 4<br>Enter the info for the aircraft you would like to insert ("registration number 142, model B52, and Make Honeywell")</h5>
 			  <div>
-			      <input type="text" name="aircraft_model_insert" placeholder="aircraft_model_insert">
+			      <select id="aircraft_model_insert" name="aircraft_model_insert" placeholder="aircraft_model_insert">
+			      	<option value="A234">A234</option>
+			      	<option value="B52">B52</option>
+			      	<option value="D019">D019</option>
+			      	<option value="D339">D339</option>
+			      	<option value="ID232">ID232</option>
+			      </select>
 			  </div>
 			  <div>
-			      <input type="text" name="aircraft_make_insert" placeholder="aircraft_make_insert">
+			      <select id="aircraft_make_insert" name="aircraft_make_insert" placeholder="aircraft_make_insert">
+			      	<option value="Airbus">Airbus</option>
+			      	<option value="Boeing">Boeing</option>
+			      	<option value="Ferrari">Ferrari</option>
+			      	<option value="Ford">Ford</option>
+			      	<option value="Honeywell">Honeywell</option>
+			      	<option value="Sus">Sus</option>
+			      </select>
 			  </div>
 			  <div>
 			      <input type="text" name="aircraft_reg_num_insert" placeholder="aircraft_reg_num_insert">
@@ -97,10 +122,23 @@
 			      <input type="text" name="aircraft_reg_num" placeholder="aircraft_reg_num">
 			  </div>
 			  <div>
-			      <input type="text" name="aircraft_model" placeholder="aircraft_model">
+			      <select id="aircraft_model" name="aircraft_model" placeholder="aircraft_model">
+			      	<option value="A234">A234</option>
+			      	<option value="B52">B52</option>
+			      	<option value="D019">D019</option>
+			      	<option value="D339">D339</option>
+			      	<option value="ID232">ID232</option>
+			      </select>
 			  </div>
 			  <div>
-			      <input type="text" name="aircraft_make" placeholder="aircraft_make">
+			      <select id="aircraft_make" name="aircraft_make" placeholder="aircraft_make">
+			      	<option value="Airbus">Airbus</option>
+			      	<option value="Boeing">Boeing</option>
+			      	<option value="Ferrari">Ferrari</option>
+			      	<option value="Ford">Ford</option>
+			      	<option value="Honeywell">Honeywell</option>
+			      	<option value="Sus">Sus</option>
+			      </select>
 			  </div>
 			  <p>Which Incident is this aircraft associated with?</p>
 			  <div>
