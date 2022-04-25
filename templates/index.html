@@ -2,16 +2,7 @@
 
 {% block content %}
     
-    <!-- alchemy -->
-    <form action="{{ url_for('user_entry_to_sql')}}" method="post">
-          <h5>Enter the aircraft model ("A234")</h5>
-          <div>
-              <input type="text" name="aircraft_model" placeholder="aircraft_model">
-          </div>
-          <div>
-              <button >Submit</button>
-          </div>
-      </form>
+   
       
     <p>Get result</p>
     {%for aircraft_model in result %}
