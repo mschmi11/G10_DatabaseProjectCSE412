@@ -33,13 +33,13 @@ document.addEventListener('DOMContentLoaded', function() {
 			.attr('d',geoPath)
 			.on('click', function(d) {
 				console.log(`clicked on ${d.properties.name}`);
-				drawSelectedState(d.properties.name);
+				drawBox(d.properties.name);
 		});
 	});
 })
 
 //draw svg for state
-function drawSelectedState(stateName) {         
+function drawBox(stateName) {         
 	//remove existing
 	usaSvg.selectAll('.selectedState').remove();
 
