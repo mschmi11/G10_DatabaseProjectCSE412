@@ -25,9 +25,6 @@ Aircraft = Base.classes.aircraft
 Casualties = Base.classes.casualties
 
 
-
-
-
 # establishes connection to DB
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
@@ -35,6 +32,7 @@ def get_db_connection():
                             user='admin',
                             password='admin')
     return conn
+
 
 # gets user entry from UI
 def get_user_entry():
@@ -54,7 +52,7 @@ def get_user_entry():
     incident_event_date = request.form["incident_event_date"]
     incident_event_location = request.form["incident_event_location"]
     incident_aircraft_reg_num = request.form["incident_aircraft_reg_num"]
-    user_input = aircraft_model + aircraft_make
+    # user_input = aircraft_model + aircraft_make
     """if (aircraft_model != null)
     {
     	input_type = 'Aircraft Registration'
@@ -69,9 +67,56 @@ def get_user_entry():
 # Insert an aircraft
 @app.route("/user_entry_to_sql", methods=['POST'])
 def user_entry_to_sql():
+    user_input: string
+    a_list1: list
+    a_list2: list
+    i_list1: list
+    i_list2: list
+    i_list3: list
+    i_list4: list
+    incidents_ntsb_num_list: list
+    result_set: set
+
+    if aircraft_model or aircraft_make
+        if aircraft_model:
+            a_list1 = db.select([Aircraft.columns.event_ntsb_num]).where(Aircraft.columns.aircraft_reg_number == aircraft_reg_num)
+            s1 = set(a_list1)
+        if (aircraft_make):
+            a_list2 = db.select([Aircraft.columns.event_ntsb_num]).where(Aircraft.columns.aircraft_reg_number == aircraft_make)
+            s2 = set(a_list2)
+
+
+        if a_list1:
+            if a_list2:
+                result_set = s1.intersection(s2)
+            else:
+                result_set = s1
+        elif a_list2:
+            result_set = s2
+
+
+        incidents_ntsb_num_list = db.select([Incidents.event_ntsb_number])
+        result_set = result_set.intersection(incidents_ntsb_num_list)
+
+    '''
+    elif incident_event_ntsb or incident_event_severity or incident_event_date or incident_event_location
+        if incident_event_ntsb:
+            i_list1 = db.select([Incidents.columns.])
+
+        if incident_event_severity:
+
+        if incident_event_date:
+
+        if incident_event_location:
+        
+    list_incidents
+    list_casualties
     result_test = db.session.query(Aircraft).filter_by(aircraft_model='A234')
+    '''
+
     return render_template("index.html", result_test=result_test)
-    
+
+
     """
     if input_type == "Aircraft Registration":  # Input is entered into Aircraft Registration text field
         sql_query = session.query(Incidents).filter(Incidents.aircraft_reg_number == user_input).all()
@@ -160,7 +205,8 @@ def user_entry_to_sql():
     index(sql_query)
 """
 
-#this runs at the start of the program
+
+# this runs at the start of the program
 @app.route('/')
 def index():
     conn = get_db_connection()
@@ -170,6 +216,7 @@ def index():
     cur.close()
     conn.close()
     return render_template('index.html', result=result)
+
 
 # template for requesting user entered info and returning query result
 @app.route("/countaircraft", methods=['POST'])
@@ -182,31 +229,36 @@ def countaircraft():
     cur.close()
     conn.close()
     return render_template("index.html", result=result)
-    
-# queries 
+
+
+# queries
 # Select aircraft with an incident on user date
 @app.route("/aircraftIncidentOnDate", methods=['POST'])
 def aircraftIncidentOnDate():
     incident_date = request.form["incident_date"]
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT DISTINCT Aircraft.aircraft_reg_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Incidents.event_date=\'' + incident_date + '\';')
+    cur.execute(
+        'SELECT DISTINCT Aircraft.aircraft_reg_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Incidents.event_date=\'' + incident_date + '\';')
     resultQuery1 = cur.fetchall()
     cur.close()
     conn.close()
     return render_template("index.html", resultQuery1=resultQuery1)
-    
+
+
 # Select all incidents by aircraft model
 @app.route("/incidentsByModel", methods=['POST'])
 def incidentsByModel():
     aircraft_model2 = request.form["aircraft_model2"]
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('SELECT DISTINCT Incidents.event_ntsb_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Aircraft.aircraft_model=\'' + aircraft_model2 + '\';')
+    cur.execute(
+        'SELECT DISTINCT Incidents.event_ntsb_number FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND Aircraft.aircraft_model=\'' + aircraft_model2 + '\';')
     resultQuery2 = cur.fetchall()
     cur.close()
     conn.close()
     return render_template("index.html", resultQuery2=resultQuery2)
+
 
 # Insert an aircraft
 @app.route("/insertAircraft", methods=['POST'])
@@ -216,7 +268,8 @@ def insertAircraft():
     aircraft_reg_num_insert = request.form["aircraft_reg_num_insert"]
     conn = get_db_connection()
     cur = conn.cursor()
-    cur.execute('INSERT INTO Aircraft VALUES (' + aircraft_reg_num_insert + ', NULL, \'' + aircraft_make_insert + '\', \'' + aircraft_model_insert + '\'); SELECT * FROM Aircraft WHERE aircraft_reg_number=\'' + aircraft_reg_num_insert + '\';')
+    cur.execute(
+        'INSERT INTO Aircraft VALUES (' + aircraft_reg_num_insert + ', NULL, \'' + aircraft_make_insert + '\', \'' + aircraft_model_insert + '\'); SELECT * FROM Aircraft WHERE aircraft_reg_number=\'' + aircraft_reg_num_insert + '\';')
     result_insert = cur.fetchall()
     cur.close()
     conn.close()
