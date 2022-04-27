@@ -11,6 +11,7 @@ var usaProjection;
 
 //data from db
 var crashData;
+var aircraftData;
 
 //states array
 var states = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
@@ -39,6 +40,7 @@ document.addEventListener('DOMContentLoaded', function() {
 			.data(usaMapData.features)
 			.join('path')
 			.classed('state',true)
+			.style("fill", '#ffffff');
 			.attr('d',geoPath)
 			.on('click', function(d) {
 				console.log(`clicked on ${d.properties.name}`);
@@ -68,7 +70,25 @@ async function request_data_from_flask() {
 	})
 }
 
+async function get_aircraft() {
 
+	//fetch POST request to flask server
+	const url = `${window.origin}/map_get_aircraft_function`;
+	fetch(url, {
+		method: 'POST'
+	})
+	//recieve response
+	.then(response => {
+		if (response.status != 200) {
+			console.log("Error. Status code: ${response.status}");
+			return;
+		}
+		response.json().then(data => {
+			console.log(data);
+			aircraftData = data;
+		})
+	})
+}
 
 //draw svg for state
 function drawBox(stateName) {         
@@ -101,7 +121,38 @@ function drawBox(stateName) {
 	console.log(ind);
 	var dytemp = 40;
 	console.log(crashData[ind]);
+	console.log(crashData[ind][0]);
+	console.log(crashData[ind][0][0]);
 	
+	
+	for (var j = 0; j < 50; j++) {
+		
+		
+		
+		
+		
+		if (crashData[ind][j][0]==d3.select(svg_select).value){
+			console.log("Match");
+			
+			glyph.append('text')
+				.attr('dx',10)    
+				.attr('dy',dytemp) 
+				.style('text-anchor','left')
+				.text("Match");
+		}
+		else {
+		
+			console.log("No matches");
+			
+			glyph.append('text')
+				.attr('dx',10)    
+				.attr('dy',dytemp) 
+				.style('text-anchor','left')
+				.text("No matches");
+		}
+	}
+	
+	/*
 	if (!crashData[ind].length) {
 		glyph.append('text')
 			.attr('dx',10)    
@@ -121,7 +172,7 @@ function drawBox(stateName) {
 	}
 	
 	
-	}
+	}*/
 	/*for (var i=0; i<Object.keys(crashData).length; i++) {
 		if (
 		console.log(crashData[i]);

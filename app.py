@@ -536,9 +536,19 @@ def map_function():
     cur.close()
     conn.close()
     return json.dumps(result_map_function)
-    
-    
-    
+
+
+@app.route("/map_get_aircraft_function", methods=['POST'])
+def map_get_aircraft_function():
+    svg_select = request.form["svg_select"]
+    conn = get_db_connection()
+    cur = conn.cursor()  
+    cur.execute(
+        'SELECT * FROM Aircraft WHERE aircraft_model=\'' + svg_select + '\';')
+    result_map_get_aircraft_function = cur.fetchall()
+    cur.close()
+    conn.close()
+    return json.dumps(result_map_get_aircraft_function)
     
     
     
