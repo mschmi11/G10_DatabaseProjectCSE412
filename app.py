@@ -26,6 +26,7 @@ Casualties = Base.classes.casualties
 
 session = Session(db.engine)
 
+
 # establishes connection to DB
 def get_db_connection():
     conn = psycopg2.connect(host='localhost',
@@ -69,6 +70,9 @@ def user_entry_to_sql():
     c_list4 = list()
     c_list5 = list()
     c_list6 = list()
+    result_incident_list = list()
+    temp_event_ntsb_list = list()
+    temp_NTSB_NUM_string_list = list()
     incident_queried = False
     aircraft_queried = False
     casualties_queried = False
@@ -124,16 +128,20 @@ def user_entry_to_sql():
     if incident_event_ntsb or incident_event_date or incident_event_location or incident_event_severity:
         incident_queried = True
         if incident_event_ntsb:
-            i_list1 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_ntsb_number == incident_event_ntsb).all()
+            i_list1 = session.query(Incidents.event_ntsb_number).filter(
+                Incidents.event_ntsb_number == incident_event_ntsb).all()
             is1 = set(i_list1)
         if incident_event_date:
-            i_list2 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_date == incident_event_date).all()
+            i_list2 = session.query(Incidents.event_ntsb_number).filter(
+                Incidents.event_date == incident_event_date).all()
             is2 = set(i_list2)
         if incident_event_location:
-            i_list3 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_location == incident_event_location).all()
+            i_list3 = session.query(Incidents.event_ntsb_number).filter(
+                Incidents.event_location == incident_event_location).all()
             is3 = set(i_list3)
         if incident_event_severity:
-            i_list4 = session.query(Incidents.event_ntsb_number).filter(Incidents.event_severity == incident_event_severity).all()
+            i_list4 = session.query(Incidents.event_ntsb_number).filter(
+                Incidents.event_severity == incident_event_severity).all()
             is4 = set(i_list4)
         if i_list1:
             if i_list2:
@@ -193,10 +201,12 @@ def user_entry_to_sql():
             c_list4 = session.query(Casualties.event_ntsb_number).filter(Casualties.dob == casualties_dob).all()
             cs4 = set(c_list4)
         if casualties_first_name:
-            c_list5 = session.query(Casualties.event_ntsb_number).filter(Casualties.first_name == casualties_first_name).all()
+            c_list5 = session.query(Casualties.event_ntsb_number).filter(
+                Casualties.first_name == casualties_first_name).all()
             cs5 = set(c_list5)
         if casualties_last_name:
-            c_list6 = session.query(Casualties.event_ntsb_number).filter(Casualties.last_name == casualties_last_name).all()
+            c_list6 = session.query(Casualties.event_ntsb_number).filter(
+                Casualties.last_name == casualties_last_name).all()
             cs6 = set(c_list6)
 
         if c_list1:
@@ -329,19 +339,19 @@ def user_entry_to_sql():
                 else:
                     casualty_result_set = cs2.intersection(cs3)
             elif c_list4:
-                    if c_list5:
-                        if c_list6:
-                            casualty_result_set = cs2.intersection(cs4)
-                            casualty_result_set = casualty_result_set.intersection(cs5)
-                            casualty_result_set = casualty_result_set.intersection(cs6)
-                        else:
-                            casualty_result_set = cs2.intersection(cs4)
-                            casualty_result_set = casualty_result_set.intersection(cs5)
-                    elif c_list6:
+                if c_list5:
+                    if c_list6:
                         casualty_result_set = cs2.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
                         casualty_result_set = casualty_result_set.intersection(cs6)
                     else:
                         casualty_result_set = cs2.intersection(cs4)
+                        casualty_result_set = casualty_result_set.intersection(cs5)
+                elif c_list6:
+                    casualty_result_set = cs2.intersection(cs4)
+                    casualty_result_set = casualty_result_set.intersection(cs6)
+                else:
+                    casualty_result_set = cs2.intersection(cs4)
             elif c_list5:
                 if c_list6:
                     casualty_result_set = cs2.intersection(cs5)
@@ -415,7 +425,21 @@ def user_entry_to_sql():
     else:
         result_set = casualty_result_set
 
-    return render_template("index.html", result_user_entry_to_sql=result_set)
+    conn = get_db_connection()
+    cur = conn.cursor()
+    temp_event_ntsb_list = list(result_set)
+    ntsb_strings = [i[0] for i in temp_event_ntsb_list]
+    res = ""
+    for i in ntsb_strings:
+        print(i)
+        cur.execute('SELECT * FROM Incidents WHERE event_ntsb_number=\'' + i + '\';')
+        result = cur.fetchall()
+        res = res + str(result) + "\n"
+        print(res)
+
+    cur.close()
+    conn.close()
+    return render_template("index.html", result_user_entry_to_sql=res)
 
 
 # this runs at the start of the program
@@ -486,7 +510,7 @@ def insertAircraft():
     cur.close()
     conn.close()
     return render_template("index.html", result_insertAircraft=result_insertAircraft)
-    
+
 
 # Update an aircraft
 @app.route("/updateAircraft", methods=['POST'])
@@ -501,7 +525,7 @@ def updateAircraft():
     cur.close()
     conn.close()
     return render_template("index.html", result_updateAircraft=result_updateAircraft)
-     
+
 
 # Update an aircraft
 @app.route("/deleteCasualty", methods=['POST'])
@@ -511,19 +535,20 @@ def deleteCasualty():
     cur = conn.cursor()
     cur.execute(
         'DELETE FROM Casualties WHERE casualty_id=\'' + casualty_id_delete + '\';')
-    #result_updateAircraft = cur.fetchall()
+    # result_updateAircraft = cur.fetchall()
     result_updateAircraft = casualty_id_delete + "deleted."
     cur.close()
     conn.close()
-    return render_template("index.html", result_deleteCasualty=casualty_id_delete+" deleted.")
+    return render_template("index.html", result_deleteCasualty=casualty_id_delete + " deleted.")
+
 
 @app.route("/map_button", methods=['POST'])
 def map_button():
     casualty_id_delete = request.form["svg_select"]
-    #print(casualty_id_delete)
+    # print(casualty_id_delete)
     global result_button
     result_button = casualty_id_delete;
-    #print(result_button)
+    # print(result_button)
     return render_template("index.html", result_button=result_button)
 
 
@@ -532,37 +557,44 @@ def map_button():
 def map_function():
     conn = get_db_connection()
     cur = conn.cursor()
-    
-    states = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut",  "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
-    
+
+    states = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut", "Delaware",
+              "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana",
+              "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana",
+              "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada",
+              "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina",
+              "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin",
+              "West Virginia", "Wyoming"]
+
     result_map_function = []
-    
-    #print("test", result_button)
-    
+
+    # print("test", result_button)
+
     global result_button
-    if (result_button==""):
-    	for i in (states):
-	    	cur.execute('SELECT * FROM Incidents WHERE event_state=\'' + i + '\';')
-	    	state = cur.fetchall()
-	    	#print(state)
-	    	if not (state is None):
-	    		result_map_function.append(state)
+    if (result_button == ""):
+        for i in (states):
+            cur.execute('SELECT * FROM Incidents WHERE event_state=\'' + i + '\';')
+            state = cur.fetchall()
+            # print(state)
+            if not (state is None):
+                result_map_function.append(state)
     else:
-    	for i in (states):
-	    	cur.execute('SELECT * FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND event_state=\'' + i + '\' AND aircraft_model=\'' + result_button + '\';')
-	    	state = cur.fetchall()
-	    	#print(state)
-	    	if not (state is None):
-	    		result_map_function.append(state)
-	    		
+        for i in (states):
+            cur.execute(
+                'SELECT * FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND event_state=\'' + i + '\' AND aircraft_model=\'' + result_button + '\';')
+            state = cur.fetchall()
+            # print(state)
+            if not (state is None):
+                result_map_function.append(state)
+
     print(result_map_function)
     cur.close()
     conn.close()
     return json.dumps(result_map_function)
 
 
-    
-    
-    
-    
-    
+
+
+
+
+
