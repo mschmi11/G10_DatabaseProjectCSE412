@@ -4,7 +4,7 @@
     <div class="container-fluid">
     	<div class="row justify-content-center">
     		<div class="col-10">
-		    <!-- Count aircraft -->
+		    <!-- Count aircraft, map url to python method then return -->
 		    <form action="{{ url_for('countaircraft')}}" method="post">
 			  <h5>Sample Query 1<br>Enter the aircraft model that you would like to count (ex: "A234")</h5>
 			  <div>
@@ -262,25 +262,29 @@
     	</div>
     </div>
     
-    
     <br>
     <p>USA Map using d3.js:</p>
     
-    <select id="svg_select" name="svg_select" placeholder="svg_select">
-	<option value=""></option>
+		    <br><form action="{{ url_for('map_button')}}" method="post">
+		    <h5>Map Query<br>Enter Aircraft model. If no input here, then map will present all incidents.</h5>
+		    <select id="svg_select" name="svg_select" placeholder="svg_select">
+				<option value=""></option>
 			      	<option value="A234">A234</option>
 			      	<option value="B52">B52</option>
 			      	<option value="D019">D019</option>
 			      	<option value="D339">D339</option>
 			      	<option value="ID232">ID232</option>
-			      </select>
-    
+			
+			</select>
+			  <div>
+			      <button >Submit</button>
+			  </div>
+		    </form>
+   				 
+    <!-- Map -->
     <div class='row justify-content-center'>
     	<div id="svgHolder" class='col-11'>
             <svg id='mapSvg'></svg>
     	</div>
     </div>
-    
-    
-    
 {% endblock %}

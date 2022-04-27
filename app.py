@@ -8,6 +8,8 @@ from sqlalchemy import create_engine, and_, select
 from sqlalchemy.ext.automap import automap_base
 from sqlalchemy.orm import sessionmaker, Session
 
+result_button = "";
+
 app = Flask(__name__)
 
 # app.config['SQLALCHEMY_TRACK_MODIFICATIONS'] = False
@@ -514,7 +516,16 @@ def deleteCasualty():
     cur.close()
     conn.close()
     return render_template("index.html", result_deleteCasualty=casualty_id_delete+" deleted.")
-    
+
+@app.route("/map_button", methods=['POST'])
+def map_button():
+    casualty_id_delete = request.form["svg_select"]
+    #print(casualty_id_delete)
+    global result_button
+    result_button = casualty_id_delete;
+    #print(result_button)
+    return render_template("index.html", result_button=result_button)
+
 
 # Get data for map Function
 @app.route("/map_function", methods=['POST'])
@@ -525,32 +536,31 @@ def map_function():
     states = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut",  "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
     
     result_map_function = []
-    for i in (states):
-    	cur.execute('SELECT * FROM Incidents WHERE event_state=\'' + i + '\';')
-    	state = cur.fetchall()
-    	print(state)
-    	if not (state is None):
-    		result_map_function.append(state)
     
+    #print("test", result_button)
+    
+    global result_button
+    if (result_button==""):
+    	for i in (states):
+	    	cur.execute('SELECT * FROM Incidents WHERE event_state=\'' + i + '\';')
+	    	state = cur.fetchall()
+	    	#print(state)
+	    	if not (state is None):
+	    		result_map_function.append(state)
+    else:
+    	for i in (states):
+	    	cur.execute('SELECT * FROM Aircraft, Incidents WHERE Aircraft.aircraft_reg_number=Incidents.aircraft_reg_number AND event_state=\'' + i + '\' AND aircraft_model=\'' + result_button + '\';')
+	    	state = cur.fetchall()
+	    	#print(state)
+	    	if not (state is None):
+	    		result_map_function.append(state)
+	    		
     print(result_map_function)
     cur.close()
     conn.close()
     return json.dumps(result_map_function)
 
 
-@app.route("/map_get_aircraft_function", methods=['POST'])
-def map_get_aircraft_function():
-    svg_select = request.form["svg_select"]
-    conn = get_db_connection()
-    cur = conn.cursor()  
-    cur.execute(
-        'SELECT * FROM Aircraft WHERE aircraft_model=\'' + svg_select + '\';')
-    result_map_get_aircraft_function = cur.fetchall()
-    cur.close()
-    conn.close()
-    return json.dumps(result_map_get_aircraft_function)
-    
-    
     
     
     

@@ -16,7 +16,6 @@ var aircraftData;
 //states array
 var states = ["Alaska", "Alabama", "Arkansas", "Arizona", "California", "Colorado", "Connecticut", "Delaware", "Florida", "Georgia", "Hawaii", "Iowa", "Idaho", "Illinois", "Indiana", "Kansas", "Kentucky", "Louisiana", "Massachusetts", "Maryland", "Maine", "Michigan", "Minnesota", "Missouri", "Mississippi", "Montana", "North Carolina", "North Dakota", "Nebraska", "New Hampshire", "New Jersey", "New Mexico", "Nevada", "New York", "Ohio", "Oklahoma", "Oregon", "Pennsylvania", "Rhode Island", "South Carolina", "South Dakota", "Tennessee", "Texas", "Utah", "Virginia", "Vermont", "Washington", "Wisconsin", "West Virginia", "Wyoming"]
 
-
 //on page load
 document.addEventListener('DOMContentLoaded', function() {   
 	usaSvg = d3.select('#mapSvg')
@@ -40,11 +39,11 @@ document.addEventListener('DOMContentLoaded', function() {
 			.data(usaMapData.features)
 			.join('path')
 			.classed('state',true)
-			.style("fill", '#ffffff');
 			.attr('d',geoPath)
 			.on('click', function(d) {
 				console.log(`clicked on ${d.properties.name}`);
 				drawBox(d.properties.name);
+				//d3.select("arizona").style("fill", "#FF0000");
 		});
 	});
 })
@@ -70,28 +69,8 @@ async function request_data_from_flask() {
 	})
 }
 
-async function get_aircraft() {
-
-	//fetch POST request to flask server
-	const url = `${window.origin}/map_get_aircraft_function`;
-	fetch(url, {
-		method: 'POST'
-	})
-	//recieve response
-	.then(response => {
-		if (response.status != 200) {
-			console.log("Error. Status code: ${response.status}");
-			return;
-		}
-		response.json().then(data => {
-			console.log(data);
-			aircraftData = data;
-		})
-	})
-}
-
 //draw svg for state
-function drawBox(stateName) {         
+function drawBox(stateName) {  
 	//remove existing
 	usaSvg.selectAll('.selectedState').remove();
 
@@ -118,47 +97,18 @@ function drawBox(stateName) {
 		.text(stateName + " Crashes");
 	
 	ind = states.indexOf(stateName);
-	console.log(ind);
+	//console.log(ind);
 	var dytemp = 40;
-	console.log(crashData[ind]);
-	console.log(crashData[ind][0]);
-	console.log(crashData[ind][0][0]);
+	//console.log(crashData[ind]);
+	//console.log(crashData[ind][0]);
+	//console.log(crashData[ind][0][0]);
 	
-	
-	for (var j = 0; j < 50; j++) {
-		
-		
-		
-		
-		
-		if (crashData[ind][j][0]==d3.select(svg_select).value){
-			console.log("Match");
-			
-			glyph.append('text')
-				.attr('dx',10)    
-				.attr('dy',dytemp) 
-				.style('text-anchor','left')
-				.text("Match");
-		}
-		else {
-		
-			console.log("No matches");
-			
-			glyph.append('text')
-				.attr('dx',10)    
-				.attr('dy',dytemp) 
-				.style('text-anchor','left')
-				.text("No matches");
-		}
-	}
-	
-	/*
 	if (!crashData[ind].length) {
 		glyph.append('text')
 			.attr('dx',10)    
 			.attr('dy',dytemp) 
 			.style('text-anchor','left')
-			.text("No crashes");
+			.text("No matching crashes");
 	}
 	else
 	{
@@ -169,24 +119,6 @@ function drawBox(stateName) {
 				.attr('dy',dytemp) 
 				.style('text-anchor','left')
 				.text(crashData[ind][i]);
+		}
 	}
-	
-	
-	}*/
-	/*for (var i=0; i<Object.keys(crashData).length; i++) {
-		if (
-		console.log(crashData[i]);
-		console.log(crashData[i][0][6]);
-	}*/
-	/*if (stateName
-	var dytemp = 40;
-	for (var i=0; i<Object.keys(crashData).length; i++) {
-		console.log(crashData[i]);
-		dytemp = dytemp + 20;
-		glyph.append('text')
-			.attr('dx',10)    
-			.attr('dy',dytemp) 
-			.style('text-anchor','left')
-			.text(crashData[i]);
-	}*/
 }
